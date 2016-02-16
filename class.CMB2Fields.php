@@ -2,10 +2,10 @@
 
 Class CMB2Fields {
   public $post_id,
-      $field_prefix,
-      $img_width,
-      $img_height,
-      $render_args;
+         $field_prefix,
+         $img_width,
+         $img_height,
+         $render_args;
 
   public $cmb_prefix = '_theme_prefix_cmb2_';
 
@@ -13,23 +13,11 @@ Class CMB2Fields {
     'multi'       => false,
     'multi_val'   => null,
     'is_single'   => true,
-    'placeholder' => true
+    'placeholder' => false
   ];
 
   public function __construct($post_id) {
     $this->post_id = $post_id;
-  }
-
-  public function parent_post_id($post_id) {
-    $parent_post_id = $this->get_post_object($post_id)->post_parent;
-
-    return $parent_post_id !== 0 ? $parent_post_id : $post_id;
-  }
-
-  public function get_parent_object() {
-    return $this->is_parent($this->get_post_object()) ?
-           get_post($this->get_post_object()->post_parent) :
-           $this->get_post_object();
   }
 
   public function set_image_size($width, $height) {
@@ -50,15 +38,16 @@ Class CMB2Fields {
                      $field_args['is_single']
                    );
 
-    if(strpos($field_name, 'image') !== false && empty($field_value) && $field_args['placeholder'] === true) {
-      if(!empty($field_args['image'])) {
-        return $this->get_placeholder(
-          $field_args['image']['w'],
-          $field_args['image']['h']
-        );
-      } else {
-        return $this->get_placeholder($this->img_width, $this->img_height);
-      }
+    if(strpos($field_name, 'image') !== false && empty($field_value) &&
+      $field_args['placeholder'] === true) {
+        if(!empty($field_args['image'])) {
+          return $this->get_placeholder(
+            $field_args['image']['w'],
+            $field_args['image']['h']
+          );
+        } else {
+          return $this->get_placeholder($this->img_width, $this->img_height);
+        }
     } else {
       return $field_value;
     }
@@ -73,7 +62,7 @@ Class CMB2Fields {
 
       return $featured_image[0];
     } else {
-     return $this->generate_placeholder_from($size);
+      return $this->generate_placeholder_from($size);
     }
   }
 
@@ -127,10 +116,6 @@ Class CMB2Fields {
 
   protected function get_post_object($post_id = null) {
     return get_post(!empty($post_id) ? $post_id : $this->post_id);
-  }
-
-  protected function is_parent($post) {
-    return $post->post_parent !== 0 ? true : false;
   }
 
   protected function generate_placeholder_from($size) {
