@@ -12,22 +12,9 @@ This repo is intended as a library resource, to be updated and added to with cod
 
 You can of course clone this repo and simply remove the `examples` folder or copy and paste the required code from raw as necessary.
 
-However you wish to use this repo, the follow code shows how these classes can be included into your WordPress theme by autoloading these classes with the follow (recommend placing this code in your functions.php file):
+In order to use these helper classes in a WordPress project, you need to ensure that the correct files are loaded when called. I've managed this via the `spl_autoload_register` method. In the `functions.php` file you'll find all the necessary functions to load the base helpers.
 
-```
-function autoload_classes($name) {
-  $class_path = get_template_directory() . '/includes/class.' . strtolower($name)
-  . '.php';
-  if(file_exists($class_path)) {
-    require_once $class_path;
-  }
-}
-spl_autoload_register('autoload_classes');
-
-if(function_exists('__autoload')) {
-  spl_autoload_register('__autoload');
-}
-```
+There are 2 autoloaders, `autoload_classes` and `autoload_lib_classes`. The first looks for classes with a filename convention of lowercased with words separatated by hypens i.e. `CustomMetaboxes` becomes `class.custom-metaboxes.php`. However this will not find the correct file for classes named like `CMB2Fields` as it would try and look for `class.c-m-b-2-fields.php` which is what we want. Therefore, the second autoloader looks for files that are just lowercased i.e. `class.cmb2fields.php`
 
 ## Using a CMB2Field Class
 
